@@ -1,11 +1,12 @@
 import useFetch from '@hooks/useFetch';
 import endPoints from '@services/api';
-
-const PRODUCT_LIMIT = 15;
-const PRODUCT_OFFSET = 15;
+import { useState } from 'react';
 
 export default function Dashboard() {
-  const products = useFetch(endPoints.products.getProducts(PRODUCT_LIMIT, PRODUCT_OFFSET));
+  const [productLimit, setProductLimit] = useState(5);
+  const [productOffset, setProductOffset] = useState(0);
+
+  let products = useFetch(endPoints.products.getProducts(productLimit, productOffset));
 
   return (
     <>
@@ -73,6 +74,20 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex items-center justify-center my-3">
+        <button
+          className={`h-10 w-20 bg-white hover:bg-indigo-200 rounded-lg text-center items-center ${
+            productOffset === 0 ? 'text-gray-400 hover:bg-gray-200' : 'text-indigo-600 hover:text-indigo-900'
+          }`}
+          onClick={() => setProductOffset(productOffset - 5)}
+          disabled={productOffset === 0}
+        >
+          Prev
+        </button>
+        <button className="h-10 w-20 bg-white text-indigo-600 hover:text-indigo-900 hover:bg-indigo-200 rounded-lg text-center items-center" onClick={() => setProductOffset(productOffset + 5)}>
+          Next
+        </button>
       </div>
     </>
   );
