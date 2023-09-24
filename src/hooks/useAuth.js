@@ -29,6 +29,10 @@ function useProviderAuth() {
 
     if (access_token) {
       Cookie.set('token', access_token.access_token, { expires: 5 });
+      const token = access_token.access_token;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      const { data: user } = await axios.get(endPoints.auth.profile);
+      setUser(user);
     }
   };
 
