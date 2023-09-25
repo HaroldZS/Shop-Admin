@@ -1,15 +1,37 @@
 import useFetch from '@hooks/useFetch';
 import endPoints from '@services/api';
 import { useState } from 'react';
+import { Chart } from '@common/Chart';
 
 export default function Dashboard() {
-  const [productLimit, setProductLimit] = useState(5);
+  const [productLimit, setProductLimit] = useState(15);
   const [productOffset, setProductOffset] = useState(0);
 
   let products = useFetch(endPoints.products.getProducts(productLimit, productOffset));
 
+  const categoryName = products?.map((product) => product.category);
+  const categoryCount = categoryName?.map((category) => category.name);
+
+  const countOccurences = (arr) =>
+    arr.reduce((prev, curr) => {
+      prev[curr] = ++prev[curr] || 1;
+      return prev;
+    }, {});
+
+  const data = {
+    datasets: [
+      {
+        label: 'Categories',
+        data: countOccurences(categoryCount),
+        borderWidth: 2,
+        backgroundColor: ['#ffbb11', '#c0c0c0', '#50af95', 'f3ba2f', '#2a71d0'],
+      },
+    ],
+  };
+
   return (
     <>
+      <Chart className="mb-8 mt-2" chartData={data} />
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -77,9 +99,7 @@ export default function Dashboard() {
       </div>
       <div className="flex items-center justify-center my-3">
         <button
-          className={`h-10 w-20 bg-white hover:bg-indigo-200 rounded-lg text-center items-center ${
-            productOffset === 0 ? 'text-gray-400 hover:bg-gray-200' : 'text-indigo-600 hover:text-indigo-900'
-          }`}
+          className={`h-10 w-20 bg-white hover:bg-indigo-200 rounded-lg text-center items-center ${productOffset === 0 ? 'text-gray-400 hover:bg-gray-200' : 'text-indigo-600 hover:text-indigo-900'}`}
           onClick={() => setProductOffset(productOffset - 5)}
           disabled={productOffset === 0}
         >
