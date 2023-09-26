@@ -14,11 +14,10 @@ export default function FormProduct({ setOpen, setAlert, product }) {
       price: parseInt(formData.get('price')),
       description: formData.get('description'),
       categoryId: parseInt(formData.get('category')),
-      images: [formData.get('images').name],
+      images: product ? product.images : [formData.get('images').name],
     };
 
     if (product) {
-      console.log(data);
       updateProduct(product.id, data).then(() => {
         router.push('/dashboard/products/');
       });
